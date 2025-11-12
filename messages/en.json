@@ -1,0 +1,75 @@
+{
+  "nav": {
+    "home": "Home",
+    "about": "About",
+    "skills": "Skills",
+    "experience": "Experience",
+    "projects": "Projects",
+    "contact": "Contact"
+  },
+  "hero": {
+    "title": "Hello, I'm",
+    "subtitle": "I create modern and performant web applications with React, Next.js, Node.js and more.",
+    "contactBtn": "Contact me",
+    "downloadCv": "Download my CV",
+    "role": "Fullstack JavaScript Developer"
+  },
+  "about": {
+    "title": "About me",
+    "subtitle": "Discover my journey and passion for web development",
+    "projects": "Projects completed",
+    "experience": "Years of experience",
+    "clients": "Satisfied clients"
+  },
+  "skills": {
+    "title": "My skills",
+    "subtitle": "Technologies and tools I master to create performant solutions"
+  },
+  "experience": {
+    "title": "My experience",
+    "subtitle": "Professional journey and achievements in web development"
+  },
+  "projects": {
+    "title": "My projects",
+    "subtitle": "Discover some of my recent projects and achievements",
+    "code": "Code",
+    "demo": "Demo"
+  },
+  "contact": {
+    "title": "Contact me",
+    "subtitle": "Feel free to contact me to discuss your projects",
+    "contactInfo": "Contact information",
+    "description": "I'm available to discuss your projects and answer your questions. Don't hesitate to contact me!",
+    "email": "Email",
+    "phone": "Phone",
+    "location": "Location",
+    "name": "Full name",
+    "subject": "Subject",
+    "message": "Message",
+    "send": "Send message",
+    "sending": "Sending...",
+    "sent": "Message sent!",
+    "error": "An error occurred. Please try again."
+  },
+  "footer": {
+    "rights": "All rights reserved."
+  },
+  "admin": {
+    "login": "Admin Login",
+    "access": "Access the administration dashboard",
+    "email": "Email",
+    "password": "Password",
+    "connect": "Sign in",
+    "connecting": "Connecting...",
+    "error": "Incorrect email or password",
+    "dashboard": "Dashboard",
+    "manage": "Manage your portfolio content",
+    "about": "About",
+    "skills": "Skills",
+    "experience": "Experience",
+    "projects": "Projects",
+    "logout": "Logout",
+    "viewSite": "View site"
+  }
+}
+

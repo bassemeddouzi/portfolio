@@ -1,0 +1,283 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --primary-color: #0ea5e9;
+  --primary-color-light: #38bdf8;
+  --primary-color-dark: #0284c7;
+  --primary-color-50: rgba(14, 165, 233, 0.1);
+  --primary-color-100: rgba(14, 165, 233, 0.2);
+  --primary-color-200: rgba(14, 165, 233, 0.3);
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  html[dir='rtl'] {
+    direction: rtl;
+  }
+
+  html[dir='ltr'] {
+    direction: ltr;
+  }
+
+  body {
+    @apply bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-300;
+  }
+}
+
+@layer components {
+  .section-container {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20;
+  }
+  
+  .section-title {
+    @apply text-3xl sm:text-4xl lg:text-5xl font-bold text-center mb-4 text-gray-900 dark:text-gray-100;
+  }
+  
+  .section-subtitle {
+    @apply text-lg sm:text-xl text-center text-gray-600 dark:text-gray-400 mb-12 max-w-3xl mx-auto;
+  }
+  
+  .card {
+    @apply bg-white dark:bg-gray-800 rounded-lg p-6 transition-shadow duration-300;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  }
+  
+  .card:hover {
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  }
+  
+  .dark .card {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+  }
+  
+  .dark .card:hover {
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 10px 10px -5px rgba(0, 0, 0, 0.3);
+  }
+  
+  .btn-primary {
+    background-color: var(--primary-color);
+    @apply text-white px-6 py-3 rounded-lg font-semibold transition-colors duration-300 inline-block;
+  }
+  
+  .btn-primary:hover {
+    background-color: var(--primary-color-dark);
+  }
+  
+  .text-primary {
+    color: var(--primary-color);
+  }
+  
+  .bg-primary {
+    background-color: var(--primary-color);
+  }
+  
+  .border-primary {
+    border-color: var(--primary-color);
+  }
+  
+  /* Classes pour remplacer primary-600 - Utilisation de !important pour surcharger Tailwind */
+  .text-primary-600 {
+    color: var(--primary-color) !important;
+  }
+  
+  .bg-primary-600 {
+    background-color: var(--primary-color) !important;
+  }
+  
+  .border-primary-600 {
+    border-color: var(--primary-color) !important;
+  }
+  
+  /* Classes pour remplacer primary-400 (lighter) */
+  .text-primary-400 {
+    color: var(--primary-color-light) !important;
+  }
+  
+  .bg-primary-400 {
+    background-color: var(--primary-color-light) !important;
+  }
+  
+  /* Classes pour remplacer primary-700 (darker) */
+  .bg-primary-700 {
+    background-color: var(--primary-color-dark) !important;
+  }
+  
+  .hover\:bg-primary-700:hover {
+    background-color: var(--primary-color-dark) !important;
+  }
+  
+  .hover\:text-primary-600:hover {
+    color: var(--primary-color) !important;
+  }
+  
+  .hover\:text-primary-400:hover {
+    color: var(--primary-color-light) !important;
+  }
+  
+  /* Classes pour les backgrounds légers - Utilisation des variables CSS calculées */
+  .bg-primary-50 {
+    background-color: var(--primary-color-50, color-mix(in srgb, var(--primary-color) 10%, white)) !important;
+  }
+  
+  .bg-primary-100 {
+    background-color: var(--primary-color-100, color-mix(in srgb, var(--primary-color) 20%, white)) !important;
+  }
+  
+  .bg-primary-200 {
+    background-color: var(--primary-color-200, color-mix(in srgb, var(--primary-color) 30%, white)) !important;
+  }
+  
+  /* Classes pour les textes */
+  .text-primary-700 {
+    color: color-mix(in srgb, var(--primary-color) 80%, black) !important;
+  }
+  
+  /* Focus rings */
+  .focus\:ring-primary-500:focus {
+    --tw-ring-color: var(--primary-color) !important;
+  }
+  
+  /* Dark mode variants */
+  .dark .text-primary-400 {
+    color: var(--primary-color-light) !important;
+  }
+  
+  .dark .bg-primary-900\/20 {
+    background-color: var(--primary-color-100, rgba(0, 0, 0, 0.2)) !important;
+  }
+  
+  .dark .bg-primary-900\/30 {
+    background-color: var(--primary-color-200, rgba(0, 0, 0, 0.3)) !important;
+  }
+  
+  .dark .hover\:bg-primary-900\/20:hover {
+    background-color: var(--primary-color-100, rgba(0, 0, 0, 0.2)) !important;
+  }
+  
+  .dark .text-primary-300 {
+    color: color-mix(in srgb, var(--primary-color) 70%, white) !important;
+  }
+  
+  .dark .hover\:bg-primary-500:hover {
+    background-color: var(--primary-color-light) !important;
+  }
+  
+  /* Gradients - Utilisation directe de background-image avec toutes les combinaisons */
+  .bg-gradient-to-br.from-primary-50.via-white.to-primary-50,
+  [class*="bg-gradient-to-br"][class*="from-primary-50"][class*="via-white"][class*="to-primary-50"] {
+    background: linear-gradient(to bottom right, var(--primary-color-50, rgba(14, 165, 233, 0.1)), white, var(--primary-color-50, rgba(14, 165, 233, 0.1))) !important;
+  }
+  
+  .bg-gradient-to-br.from-primary-400.to-primary-600,
+  [class*="bg-gradient-to-br"][class*="from-primary-400"][class*="to-primary-600"] {
+    background: linear-gradient(to bottom right, var(--primary-color-light), var(--primary-color)) !important;
+  }
+  
+  .bg-gradient-to-br.from-primary-50.to-primary-100,
+  [class*="bg-gradient-to-br"][class*="from-primary-50"][class*="to-primary-100"] {
+    background: linear-gradient(to bottom right, var(--primary-color-50, rgba(14, 165, 233, 0.1)), var(--primary-color-100, rgba(14, 165, 233, 0.2))) !important;
+  }
+  
+  /* Support pour les classes Tailwind gradient avec variables */
+  [class*="from-primary-50"] {
+    --tw-gradient-from: var(--primary-color-50, rgba(14, 165, 233, 0.1)) !important;
+  }
+  
+  [class*="to-primary-50"] {
+    --tw-gradient-to: var(--primary-color-50, rgba(14, 165, 233, 0.1)) !important;
+  }
+  
+  [class*="from-primary-100"] {
+    --tw-gradient-from: var(--primary-color-100, rgba(14, 165, 233, 0.2)) !important;
+  }
+  
+  [class*="to-primary-100"] {
+    --tw-gradient-to: var(--primary-color-100, rgba(14, 165, 233, 0.2)) !important;
+  }
+  
+  [class*="from-primary-400"] {
+    --tw-gradient-from: var(--primary-color-light) !important;
+  }
+  
+  [class*="to-primary-600"] {
+    --tw-gradient-to: var(--primary-color) !important;
+  }
+  
+  /* Dark mode gradients */
+  .dark [class*="from-primary-900"] {
+    --tw-gradient-from: var(--primary-color-100, rgba(0, 0, 0, 0.2)) !important;
+  }
+  
+  .dark [class*="to-primary-900"] {
+    --tw-gradient-to: var(--primary-color-100, rgba(0, 0, 0, 0.2)) !important;
+  }
+  
+  /* Autres variantes */
+  .text-primary-500 {
+    color: var(--primary-color-light) !important;
+  }
+  
+  .bg-primary-500 {
+    background-color: var(--primary-color-light) !important;
+  }
+  
+  .hover\:text-primary-700:hover {
+    color: color-mix(in srgb, var(--primary-color) 80%, black) !important;
+  }
+  
+  .group-hover\:bg-primary-600:hover {
+    background-color: var(--primary-color) !important;
+  }
+  
+  .group-hover\:text-white:hover {
+    color: white !important;
+  }
+  
+  .dark .group-hover\:bg-primary-500:hover {
+    background-color: var(--primary-color-light) !important;
+  }
+  
+  .btn-secondary {
+    @apply bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 px-6 py-3 rounded-lg font-semibold hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors duration-300 inline-block;
+  }
+  
+  /* Force l'application de la couleur primaire sur tous les éléments utilisant les classes primary-* */
+  *[class*="primary-600"],
+  *[class*="primary-400"],
+  *[class*="primary-500"],
+  *[class*="primary-700"] {
+    --tw-text-opacity: 1;
+  }
+  
+  /* Surcharge spécifique pour les icônes et éléments inline */
+  svg.text-primary-600,
+  svg.text-primary-400 {
+    color: var(--primary-color) !important;
+  }
+  
+  svg.dark.text-primary-400 {
+    color: var(--primary-color-light) !important;
+  }
+  
+  /* Surcharge globale pour tous les gradients avec primary */
+  [class*="bg-gradient"][class*="primary"] {
+    background-image: var(--gradient-override, none) !important;
+  }
+  
+  /* Surcharge spécifique pour les backgrounds de sections avec gradients */
+  section[class*="from-primary"],
+  div[class*="from-primary"] {
+    background: var(--section-gradient, none) !important;
+  }
+  
+  /* Force la mise à jour des gradients lors du changement de couleur */
+  .bg-gradient-to-br {
+    background-image: var(--gradient-bg, inherit) !important;
+  }
+}
+

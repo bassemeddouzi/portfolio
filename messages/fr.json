@@ -1,0 +1,75 @@
+{
+  "nav": {
+    "home": "Accueil",
+    "about": "À propos",
+    "skills": "Compétences",
+    "experience": "Expérience",
+    "projects": "Projets",
+    "contact": "Contact"
+  },
+  "hero": {
+    "title": "Bonjour, je suis",
+    "subtitle": "Je crée des applications web modernes et performantes avec React, Next.js, Node.js et bien plus encore.",
+    "contactBtn": "Me contacter",
+    "downloadCv": "Télécharger mon CV",
+    "role": "Développeur Fullstack JavaScript"
+  },
+  "about": {
+    "title": "À propos de moi",
+    "subtitle": "Découvrez mon parcours et ma passion pour le développement web",
+    "projects": "Projets réalisés",
+    "experience": "Années d'expérience",
+    "clients": "Clients satisfaits"
+  },
+  "skills": {
+    "title": "Mes compétences",
+    "subtitle": "Technologies et outils que je maîtrise pour créer des solutions performantes"
+  },
+  "experience": {
+    "title": "Mon expérience",
+    "subtitle": "Parcours professionnel et réalisations dans le développement web"
+  },
+  "projects": {
+    "title": "Mes projets",
+    "subtitle": "Découvrez quelques-uns de mes projets récents et réalisations",
+    "code": "Code",
+    "demo": "Démo"
+  },
+  "contact": {
+    "title": "Contactez-moi",
+    "subtitle": "N'hésitez pas à me contacter pour discuter de vos projets",
+    "contactInfo": "Informations de contact",
+    "description": "Je suis disponible pour discuter de vos projets et répondre à vos questions. N'hésitez pas à me contacter !",
+    "email": "Email",
+    "phone": "Téléphone",
+    "location": "Localisation",
+    "name": "Nom complet",
+    "subject": "Sujet",
+    "message": "Message",
+    "send": "Envoyer le message",
+    "sending": "Envoi en cours...",
+    "sent": "Message envoyé !",
+    "error": "Une erreur s'est produite. Veuillez réessayer."
+  },
+  "footer": {
+    "rights": "Tous droits réservés."
+  },
+  "admin": {
+    "login": "Connexion Admin",
+    "access": "Accédez au tableau de bord d'administration",
+    "email": "Email",
+    "password": "Mot de passe",
+    "connect": "Se connecter",
+    "connecting": "Connexion...",
+    "error": "Email ou mot de passe incorrect",
+    "dashboard": "Tableau de bord",
+    "manage": "Gérez le contenu de votre portfolio",
+    "about": "À propos",
+    "skills": "Compétences",
+    "experience": "Expérience",
+    "projects": "Projets",
+    "logout": "Déconnexion",
+    "viewSite": "Voir le site"
+  }
+}
+
