@@ -11,7 +11,7 @@ export async function GET() {
     
     // Convertir en objet clé-valeur
     const settingsObj: Record<string, string> = {}
-    settings.forEach((setting) => {
+    settings.forEach((setting: InstanceType<typeof models.Settings>) => {
       settingsObj[setting.key] = setting.value
     })
 
