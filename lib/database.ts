@@ -22,10 +22,24 @@ function getSequelize(): Sequelize {
   if (!sequelizeInstance) {
     if (!hasDbConfig) {
       // During build time, environment variables may not be available
-      // Create a dummy instance to allow the module to load without errors
-      sequelizeInstance = new Sequelize('', '', '', {
+      // Create a dummy instance with valid-looking but fake credentials
+      // This allows models to initialize without errors during build
+      sequelizeInstance = new Sequelize('dummy_db', 'dummy_user', 'dummy_pass', {
+        host: 'localhost',
+        port: 5432,
         dialect: 'postgres',
         logging: false,
+        // Disable connection validation during build
+        pool: {
+          max: 1,
+          min: 0,
+          acquire: 1000,
+          idle: 1000,
+        },
+        // Don't try to connect during build
+        retry: {
+          max: 0,
+        },
       })
       isDummy = true
     } else {
@@ -74,17 +88,10 @@ function getSequelize(): Sequelize {
 }
 
 // Initialize at module load (may be dummy during build)
-let sequelize = getSequelize()
+// The instance will be recreated at runtime when getSequelize() is called with real config
+const sequelize = getSequelize()
 
-// Use a Proxy to ensure we always get the current connection
-// This allows the connection to be recreated at runtime if it was a dummy during build
-sequelize = new Proxy(sequelize, {
-  get(target, prop) {
-    // Always get fresh connection to ensure we have real connection at runtime
-    const currentSequelize = getSequelize()
-    return (currentSequelize as any)[prop]
-  }
-}) as Sequelize
-
+// Export both the instance and the getter function
+export { getSequelize }
 export default sequelize
 
