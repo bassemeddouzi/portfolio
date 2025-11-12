@@ -3,7 +3,17 @@ import { sequelize } from '@/models'
 import models from '@/models'
 import bcrypt from 'bcryptjs'
 
+export const dynamic = 'force-dynamic'
+
 export async function GET() {
+  // Only allow in development or with proper authentication
+  if (process.env.NODE_ENV === 'production') {
+    return NextResponse.json(
+      { message: 'This endpoint is not available in production' },
+      { status: 403 }
+    )
+  }
+
   try {
     // Synchroniser les modèles avec la base de données (alter: true pour ajouter les colonnes/tables manquantes)
     await sequelize.sync({ alter: true })

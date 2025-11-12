@@ -3,6 +3,8 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import models from '@/models'
 
+export const dynamic = 'force-dynamic'
+
 export async function GET() {
   try {
     const about = await models.About.findOne({

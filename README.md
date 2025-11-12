@@ -145,9 +145,22 @@ Utilisez le dashboard d'administration pour modifier tout le contenu sans touche
 
 ## 🚢 Déploiement
 
-Le projet peut être déployé sur :
-- **Vercel** (recommandé pour Next.js)
-- **Netlify**
+### Déploiement sur Vercel (Recommandé)
+
+📖 **Guide complet de déploiement Vercel** : Voir [`VERCEL_DEPLOYMENT.md`](./VERCEL_DEPLOYMENT.md) pour les instructions détaillées étape par étape.
+
+**Résumé rapide :**
+1. Poussez votre code sur GitHub/GitLab/Bitbucket
+2. Connectez votre repository à Vercel
+3. Configurez une base de données PostgreSQL (Vercel Postgres recommandé)
+4. Ajoutez les variables d'environnement dans Vercel
+5. Déployez !
+
+### Autres plateformes
+
+Le projet peut également être déployé sur :
+- **Netlify** - Voir [`DEPLOYMENT.md`](./DEPLOYMENT.md)
+- **Railway** - Voir [`DEPLOYMENT.md`](./DEPLOYMENT.md)
 - **AWS Amplify**
 - Tout autre hébergeur supportant Node.js
 

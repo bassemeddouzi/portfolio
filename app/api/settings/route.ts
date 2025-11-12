@@ -3,6 +3,8 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import models from '@/models'
 
+export const dynamic = 'force-dynamic'
+
 export async function GET() {
   try {
     const settings = await models.Settings.findAll()
@@ -48,7 +50,7 @@ export async function POST(request: NextRequest) {
     const [setting, created] = await models.Settings.upsert({
       key,
       value: String(value),
-      description: description || null,
+      description: description || undefined,
     }, {
       returning: true,
     })
@@ -90,7 +92,7 @@ export async function PUT(request: NextRequest) {
         models.Settings.upsert({
           key,
           value: String(value),
-          description: description || null,
+          description: description || undefined,
         }, {
           returning: true,
         })
