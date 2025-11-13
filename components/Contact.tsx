@@ -1,11 +1,13 @@
 'use client'
 
-import { useState, useEffect, FormEvent } from 'react'
+import { useState, useMemo, FormEvent } from 'react'
 import { FaEnvelope, FaPhone, FaMapMarkerAlt } from 'react-icons/fa'
 import { useTranslation } from '@/contexts/TranslationContext'
+import { useSiteSettings } from '@/components/SettingsProvider'
 
 export default function Contact() {
   const { t, dir } = useTranslation()
+  const { settings } = useSiteSettings()
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -35,63 +37,45 @@ export default function Contact() {
     })
   }
 
-  const [contactInfo, setContactInfo] = useState([
-    {
-      icon: FaEnvelope,
-      label: t('contact.email'),
-      value: 'contact@example.com',
-      href: 'mailto:contact@example.com',
-    },
-    {
-      icon: FaPhone,
-      label: t('contact.phone'),
-      value: '+33 6 12 34 56 78',
-      href: 'tel:+33612345678',
-    },
-    {
-      icon: FaMapMarkerAlt,
-      label: t('contact.location'),
-      value: 'Paris, France',
-      href: '#',
-    },
-  ])
+  const contactInfo = useMemo(() => {
+    const info: Array<{
+      icon: typeof FaEnvelope
+      label: string
+      value: string
+      href: string
+    }> = []
 
-  useEffect(() => {
-    // Charger les informations de contact depuis les paramètres
-    fetch('/api/settings')
-      .then((res) => res.json())
-      .then((settings) => {
-        const info = []
-        if (settings.contactEmail) {
-          info.push({
-            icon: FaEnvelope,
-            label: t('contact.email'),
-            value: settings.contactEmail,
-            href: settings.emailUrl || `mailto:${settings.contactEmail}`,
-          })
-        }
-        if (settings.contactPhone) {
-          info.push({
-            icon: FaPhone,
-            label: t('contact.phone'),
-            value: settings.contactPhone,
-            href: `tel:${settings.contactPhone.replace(/\s/g, '')}`,
-          })
-        }
-        if (settings.contactLocation) {
-          info.push({
-            icon: FaMapMarkerAlt,
-            label: t('contact.location'),
-            value: settings.contactLocation,
-            href: '#',
-          })
-        }
-        if (info.length > 0) {
-          setContactInfo(info)
-        }
+    if (settings.raw.contactEmail) {
+      info.push({
+        icon: FaEnvelope,
+        label: t('contact.email'),
+        value: settings.raw.contactEmail,
+        href: settings.raw.emailUrl || `mailto:${settings.raw.contactEmail}`,
       })
-      .catch(() => {})
-  }, [t])
+    }
+    if (settings.raw.contactPhone) {
+      info.push({
+        icon: FaPhone,
+        label: t('contact.phone'),
+        value: settings.raw.contactPhone,
+        href: `tel:${settings.raw.contactPhone.replace(/\s/g, '')}`,
+      })
+    }
+    if (settings.raw.contactLocation) {
+      info.push({
+        icon: FaMapMarkerAlt,
+        label: t('contact.location'),
+        value: settings.raw.contactLocation,
+        href: '#',
+      })
+    }
+
+    return info
+  }, [settings.raw, t])
+
+  if (!settings.sections.contact) {
+    return null
+  }
 
   return (
     <section id="contact" className="section-container bg-white dark:bg-gray-900" dir={dir}>

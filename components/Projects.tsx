@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { FaGithub, FaExternalLinkAlt } from 'react-icons/fa'
 import { useTranslation } from '@/contexts/TranslationContext'
+import { useSiteSettings } from '@/components/SettingsProvider'
 
 interface Project {
   id: number
@@ -16,10 +17,18 @@ interface Project {
 
 export default function Projects() {
   const { t, dir } = useTranslation()
+  const { settings } = useSiteSettings()
   const [projects, setProjects] = useState<Project[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    if (!settings.sections.projects) {
+      setProjects([])
+      setLoading(false)
+      return
+    }
+
+    setLoading(true)
     fetch('/api/projects')
       .then((res) => res.json())
       .then((data) => {
@@ -29,7 +38,11 @@ export default function Projects() {
         setProjects([])
       })
       .finally(() => setLoading(false))
-  }, [])
+  }, [settings.sections.projects])
+
+  if (!settings.sections.projects) {
+    return null
+  }
 
   if (loading) {
     return (

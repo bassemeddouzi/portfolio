@@ -1,40 +1,39 @@
 import { DataTypes, Model, Sequelize } from 'sequelize'
 
+interface AboutStats {
+  projects?: number
+  experience?: number
+  clients?: number
+  showProjects?: boolean
+  showExperience?: boolean
+  showClients?: boolean
+}
+
 interface AboutAttributes {
   id?: number
   name?: string
   jobTitle?: string
   title: string
   description: string
-  imageUrl?: string
-  stats?: {
-    projects?: number
-    experience?: number
-    clients?: number
-    showProjects?: boolean
-    showExperience?: boolean
-    showClients?: boolean
-  }
+  imageUrl?: string | null
+  imageData?: Buffer | null
+  imageMimeType?: string | null
+  stats?: AboutStats
 }
 
 class About extends Model<AboutAttributes> implements AboutAttributes {
-  public id!: number
-  public name?: string
-  public jobTitle?: string
-  public title!: string
-  public description!: string
-  public imageUrl?: string
-  public stats?: {
-    projects?: number
-    experience?: number
-    clients?: number
-    showProjects?: boolean
-    showExperience?: boolean
-    showClients?: boolean
-  }
+  declare id: number
+  declare name?: string
+  declare jobTitle?: string
+  declare title: string
+  declare description: string
+  declare imageUrl?: string | null
+  declare imageData?: Buffer | null
+  declare imageMimeType?: string | null
+  declare stats?: AboutStats
 
-  public readonly createdAt!: Date
-  public readonly updatedAt!: Date
+  declare readonly createdAt: Date
+  declare readonly updatedAt: Date
 }
 
 export default function (sequelize: Sequelize) {
@@ -62,6 +61,14 @@ export default function (sequelize: Sequelize) {
         allowNull: false,
       },
       imageUrl: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      imageData: {
+        type: DataTypes.BLOB('long'),
+        allowNull: true,
+      },
+      imageMimeType: {
         type: DataTypes.STRING,
         allowNull: true,
       },

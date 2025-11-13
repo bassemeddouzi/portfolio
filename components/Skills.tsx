@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { FaReact, FaNodeJs, FaGitAlt } from 'react-icons/fa'
 import { useTranslation } from '@/contexts/TranslationContext'
+import { useSiteSettings } from '@/components/SettingsProvider'
 
 interface Skill {
   id: number
@@ -20,20 +21,24 @@ const categoryIcons: Record<string, typeof FaReact> = {
 
 export default function Skills() {
   const { t, dir } = useTranslation()
+  const { settings } = useSiteSettings()
   const [skills, setSkills] = useState<Skill[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    if (!settings.sections.skills) {
+      setSkills([])
+      setLoading(false)
+      return
+    }
+
+    setLoading(true)
     fetch('/api/skills')
       .then((res) => res.json())
-      .then((data) => {
-        setSkills(data || [])
-      })
-      .catch(() => {
-        setSkills([])
-      })
+      .then((data) => setSkills(data || []))
+      .catch(() => setSkills([]))
       .finally(() => setLoading(false))
-  }, [])
+  }, [settings.sections.skills])
 
   const categories: Array<'Frontend' | 'Backend' | 'Outils & Technologies'> = [
     'Frontend',
@@ -45,6 +50,10 @@ export default function Skills() {
     category,
     skills: skills.filter((s) => s.category === category),
   }))
+
+  if (!settings.sections.skills) {
+    return null
+  }
 
   if (loading) {
     return (

@@ -1,7 +1,16 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { FaSave, FaSpinner } from 'react-icons/fa'
+import { useState, useEffect, useMemo } from 'react'
+import { FaSave, FaSpinner, FaTrash, FaUpload } from 'react-icons/fa'
+
+interface AboutStats {
+  projects?: number
+  experience?: number
+  clients?: number
+  showProjects?: boolean
+  showExperience?: boolean
+  showClients?: boolean
+}
 
 interface AboutData {
   id?: number
@@ -9,16 +18,17 @@ interface AboutData {
   jobTitle: string
   title: string
   description: string
-  imageUrl: string
-  stats: {
-    projects?: number
-    experience?: number
-    clients?: number
-    showProjects?: boolean
-    showExperience?: boolean
-    showClients?: boolean
-  }
+  stats: AboutStats
 }
+
+const createDefaultStats = (): AboutStats => ({
+  projects: 0,
+  experience: 0,
+  clients: 0,
+  showProjects: true,
+  showExperience: true,
+  showClients: true,
+})
 
 export default function AboutAdminPage() {
   const [data, setData] = useState<AboutData>({
@@ -26,19 +36,14 @@ export default function AboutAdminPage() {
     jobTitle: '',
     title: '',
     description: '',
-    imageUrl: '',
-    stats: {
-      projects: 0,
-      experience: 0,
-      clients: 0,
-      showProjects: true,
-      showExperience: true,
-      showClients: true,
-    },
+    stats: createDefaultStats(),
   })
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
+  const [imagePreview, setImagePreview] = useState<string | null>(null)
+  const [imageFile, setImageFile] = useState<File | null>(null)
+  const [removeImage, setRemoveImage] = useState(false)
 
   useEffect(() => {
     fetchAbout()
@@ -50,18 +55,22 @@ export default function AboutAdminPage() {
       if (res.ok) {
         const about = await res.json()
         setData({
-          ...about,
+          id: about.id,
           name: about.name || '',
           jobTitle: about.jobTitle || '',
+          title: about.title || '',
+          description: about.description || '',
           stats: {
-            projects: about.stats?.projects || 0,
-            experience: about.stats?.experience || 0,
-            clients: about.stats?.clients || 0,
-            showProjects: about.stats?.showProjects !== undefined ? about.stats.showProjects : true,
-            showExperience: about.stats?.showExperience !== undefined ? about.stats.showExperience : true,
-            showClients: about.stats?.showClients !== undefined ? about.stats.showClients : true,
+            ...createDefaultStats(),
+            ...about.stats,
           },
         })
+        setImagePreview(about.imageSrc || about.imageUrl || null)
+      } else {
+        setData((prev) => ({
+          ...prev,
+          stats: createDefaultStats(),
+        }))
       }
     } catch (error) {
       console.error('Error fetching about:', error)
@@ -70,6 +79,63 @@ export default function AboutAdminPage() {
     }
   }
 
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+    if (file) {
+      setImageFile(file)
+      setRemoveImage(false)
+      setImagePreview((prev) => {
+        if (prev && prev.startsWith('blob:')) {
+          URL.revokeObjectURL(prev)
+        }
+        return URL.createObjectURL(file)
+      })
+    }
+  }
+
+  const handleRemoveImage = () => {
+    setImagePreview((prev) => {
+      if (prev && prev.startsWith('blob:')) {
+        URL.revokeObjectURL(prev)
+      }
+      return null
+    })
+    setImageFile(null)
+    setRemoveImage(true)
+  }
+
+  useEffect(() => {
+    return () => {
+      if (imagePreview && imagePreview.startsWith('blob:')) {
+        URL.revokeObjectURL(imagePreview)
+      }
+    }
+  }, [imagePreview])
+
+  const statsEntries = useMemo(
+    () => [
+      {
+        valueKey: 'projects' as const,
+        toggleKey: 'showProjects' as const,
+        label: 'Nombre de projets',
+        toggleLabel: 'Afficher le compteur de projets',
+      },
+      {
+        valueKey: 'experience' as const,
+        toggleKey: 'showExperience' as const,
+        label: "Années d'expérience",
+        toggleLabel: "Afficher le compteur d'expérience",
+      },
+      {
+        valueKey: 'clients' as const,
+        toggleKey: 'showClients' as const,
+        label: 'Clients satisfaits',
+        toggleLabel: 'Afficher le compteur de clients',
+      },
+    ],
+    []
+  )
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setSaving(true)
@@ -77,22 +143,48 @@ export default function AboutAdminPage() {
 
     try {
       const method = data.id ? 'PUT' : 'POST'
-      const body = { ...data, id: data.id }
+      const formData = new FormData()
+
+      if (data.id) formData.append('id', String(data.id))
+      formData.append('name', data.name)
+      formData.append('jobTitle', data.jobTitle)
+      formData.append('title', data.title)
+      formData.append('description', data.description)
+      formData.append('stats', JSON.stringify(data.stats))
+
+      if (imageFile) {
+        formData.append('image', imageFile)
+      } else if (removeImage) {
+        formData.append('removeImage', 'true')
+      }
 
       const res = await fetch('/api/about', {
         method,
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body),
+        body: formData,
       })
 
       if (res.ok) {
         const saved = await res.json()
-        setData(saved)
+        setData({
+          id: saved.id,
+          name: saved.name || '',
+          jobTitle: saved.jobTitle || '',
+          title: saved.title || '',
+          description: saved.description || '',
+          stats: {
+            ...createDefaultStats(),
+            ...saved.stats,
+          },
+        })
+        setImagePreview(saved.imageSrc || saved.imageUrl || null)
+        setImageFile(null)
+        setRemoveImage(false)
         setMessage({ type: 'success', text: 'Informations sauvegardées avec succès !' })
       } else {
         setMessage({ type: 'error', text: 'Erreur lors de la sauvegarde' })
       }
     } catch (error) {
+      console.error('Error saving about:', error)
       setMessage({ type: 'error', text: 'Erreur lors de la sauvegarde' })
     } finally {
       setSaving(false)
@@ -183,17 +275,52 @@ export default function AboutAdminPage() {
             />
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              URL de l&apos;image
+          <div className="border rounded-lg p-4 bg-gray-50">
+            <label className="block text-sm font-medium text-gray-700 mb-4">
+              Image de présentation
             </label>
-            <input
-              type="url"
-              value={data.imageUrl}
-              onChange={(e) => setData({ ...data, imageUrl: e.target.value })}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none"
-              placeholder="https://example.com/image.jpg"
-            />
+            {imagePreview ? (
+              <div className="relative">
+                <img
+                  src={imagePreview}
+                  alt="Aperçu de l'image"
+                  className="w-full h-64 object-cover rounded-lg shadow"
+                />
+                <div className="flex gap-3 mt-3">
+                  <label className="btn-secondary flex items-center gap-2 cursor-pointer">
+                    <FaUpload />
+                    Modifier l&apos;image
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={handleFileChange}
+                    />
+                  </label>
+                  <button
+                    type="button"
+                    onClick={handleRemoveImage}
+                    className="flex items-center gap-2 px-4 py-2 rounded-lg border border-red-200 text-red-600 hover:bg-red-50 transition-colors"
+                  >
+                    <FaTrash />
+                    Supprimer
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <label className="flex flex-col items-center justify-center gap-3 border-2 border-dashed border-gray-300 rounded-lg py-10 cursor-pointer hover:border-primary-400 hover:bg-primary-50 transition">
+                <FaUpload className="text-gray-400 text-3xl" />
+                <span className="text-sm text-gray-600 text-center px-4">
+                  Glissez-déposez une image ou cliquez pour sélectionner un fichier (PNG, JPG, WebP)
+                </span>
+                <input
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={handleFileChange}
+                />
+              </label>
+            )}
           </div>
 
           <div className="border-t pt-6">
@@ -201,108 +328,48 @@ export default function AboutAdminPage() {
               Statistiques
             </h3>
             <div className="grid md:grid-cols-3 gap-4">
-              <div className="space-y-2">
-                <div className="flex items-center gap-2 mb-2">
-                  <input
-                    type="checkbox"
-                    id="showProjects"
-                    checked={data.stats.showProjects || false}
-                    onChange={(e) =>
-                      setData({
-                        ...data,
-                        stats: { ...data.stats, showProjects: e.target.checked },
-                      })
-                    }
-                    className="w-4 h-4 text-primary-600 border-gray-300 rounded focus:ring-primary-500"
-                  />
-                  <label htmlFor="showProjects" className="text-sm font-medium text-gray-700">
-                    Afficher dans le portfolio
+              {statsEntries.map(({ valueKey, toggleKey, label, toggleLabel }) => (
+                <div key={valueKey} className="space-y-2">
+                  <div className="flex items-center gap-2 mb-2">
+                    <input
+                      type="checkbox"
+                      id={`toggle-${valueKey}`}
+                      checked={Boolean(data.stats[toggleKey])}
+                      onChange={(e) =>
+                        setData((prev) => ({
+                          ...prev,
+                          stats: {
+                            ...prev.stats,
+                            [toggleKey]: e.target.checked,
+                          },
+                        }))
+                      }
+                      className="w-4 h-4 text-primary-600 border-gray-300 rounded focus:ring-primary-500"
+                    />
+                    <label htmlFor={`toggle-${valueKey}`} className="text-sm font-medium text-gray-700">
+                      {toggleLabel}
+                    </label>
+                  </div>
+                  <label className="block text-sm font-medium text-gray-700">
+                    {label}
                   </label>
-                </div>
-                <label className="block text-sm font-medium text-gray-700">
-                  Nombre de projets
-                </label>
-                <input
-                  type="number"
-                  value={data.stats.projects || 0}
-                  onChange={(e) =>
-                    setData({
-                      ...data,
-                      stats: { ...data.stats, projects: parseInt(e.target.value) || 0 },
-                    })
-                  }
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none"
-                  min="0"
-                />
-              </div>
-              <div className="space-y-2">
-                <div className="flex items-center gap-2 mb-2">
                   <input
-                    type="checkbox"
-                    id="showExperience"
-                    checked={data.stats.showExperience || false}
+                    type="number"
+                    value={Number(data.stats[valueKey] || 0)}
                     onChange={(e) =>
-                      setData({
-                        ...data,
-                        stats: { ...data.stats, showExperience: e.target.checked },
-                      })
+                      setData((prev) => ({
+                        ...prev,
+                        stats: {
+                          ...prev.stats,
+                          [valueKey]: Number(e.target.value) || 0,
+                        },
+                      }))
                     }
-                    className="w-4 h-4 text-primary-600 border-gray-300 rounded focus:ring-primary-500"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none"
+                    min="0"
                   />
-                  <label htmlFor="showExperience" className="text-sm font-medium text-gray-700">
-                    Afficher dans le portfolio
-                  </label>
                 </div>
-                <label className="block text-sm font-medium text-gray-700">
-                  Années d&apos;expérience
-                </label>
-                <input
-                  type="number"
-                  value={data.stats.experience || 0}
-                  onChange={(e) =>
-                    setData({
-                      ...data,
-                      stats: { ...data.stats, experience: parseInt(e.target.value) || 0 },
-                    })
-                  }
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none"
-                  min="0"
-                />
-              </div>
-              <div className="space-y-2">
-                <div className="flex items-center gap-2 mb-2">
-                  <input
-                    type="checkbox"
-                    id="showClients"
-                    checked={data.stats.showClients || false}
-                    onChange={(e) =>
-                      setData({
-                        ...data,
-                        stats: { ...data.stats, showClients: e.target.checked },
-                      })
-                    }
-                    className="w-4 h-4 text-primary-600 border-gray-300 rounded focus:ring-primary-500"
-                  />
-                  <label htmlFor="showClients" className="text-sm font-medium text-gray-700">
-                    Afficher dans le portfolio
-                  </label>
-                </div>
-                <label className="block text-sm font-medium text-gray-700">
-                  Clients satisfaits
-                </label>
-                <input
-                  type="number"
-                  value={data.stats.clients || 0}
-                  onChange={(e) =>
-                    setData({
-                      ...data,
-                      stats: { ...data.stats, clients: parseInt(e.target.value) || 0 },
-                    })
-                  }
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none"
-                  min="0"
-                />
-              </div>
+              ))}
             </div>
           </div>
 

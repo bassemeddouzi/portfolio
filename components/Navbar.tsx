@@ -1,16 +1,19 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useMemo, useState, useEffect } from 'react'
 import { FaBars, FaTimes } from 'react-icons/fa'
 import { useTranslation } from '@/contexts/TranslationContext'
 import LanguageSelector from './LanguageSelector'
 import ThemeToggle from './ThemeToggle'
+import { useSiteSettings } from '@/components/SettingsProvider'
+
+type SectionKey = 'hero' | 'skills' | 'experience' | 'projects' | 'contact'
 
 export default function Navbar() {
   const { t, dir } = useTranslation()
+  const { settings } = useSiteSettings()
   const [isOpen, setIsOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
-  const [siteName, setSiteName] = useState('Portfolio')
 
   useEffect(() => {
     const handleScroll = () => {
@@ -20,26 +23,21 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  useEffect(() => {
-    // Charger le nom du site depuis les paramètres
-    fetch('/api/settings')
-      .then((res) => res.json())
-      .then((settings) => {
-        if (settings.siteName) {
-          setSiteName(settings.siteName)
-        }
-      })
-      .catch(() => {})
-  }, [])
+  const siteName = settings.raw.siteName || 'Portfolio'
 
-  const navLinks = [
-    { href: '#accueil', label: t('nav.home') },
-    { href: '#a-propos', label: t('nav.about') },
-    { href: '#competences', label: t('nav.skills') },
-    { href: '#experience', label: t('nav.experience') },
-    { href: '#projets', label: t('nav.projects') },
-    { href: '#contact', label: t('nav.contact') },
-  ]
+  const navLinks = useMemo(
+    () =>
+      [
+        { href: '#accueil', label: t('nav.home'), section: 'hero' as SectionKey },
+        { href: '#competences', label: t('nav.skills'), section: 'skills' as SectionKey },
+        { href: '#experience', label: t('nav.experience'), section: 'experience' as SectionKey },
+        { href: '#projets', label: t('nav.projects'), section: 'projects' as SectionKey },
+        { href: '#contact', label: t('nav.contact'), section: 'contact' as SectionKey },
+      ].filter((link) => settings.sections[link.section]),
+    [settings.sections, t]
+  )
+
+  const homeHref = navLinks[0]?.href ?? '#accueil'
 
   return (
     <nav
@@ -53,7 +51,7 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16 md:h-20">
           <a
-            href="#accueil"
+            href={homeHref}
             className="text-xl md:text-2xl font-bold text-primary-600 dark:text-primary-400"
           >
             {siteName}

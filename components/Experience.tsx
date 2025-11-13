@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { FaBriefcase, FaCalendarAlt } from 'react-icons/fa'
 import { useTranslation } from '@/contexts/TranslationContext'
+import { useSiteSettings } from '@/components/SettingsProvider'
 
 interface Experience {
   id: number
@@ -14,10 +15,18 @@ interface Experience {
 
 export default function Experience() {
   const { t, dir } = useTranslation()
+  const { settings } = useSiteSettings()
   const [experiences, setExperiences] = useState<Experience[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    if (!settings.sections.experience) {
+      setExperiences([])
+      setLoading(false)
+      return
+    }
+
+    setLoading(true)
     fetch('/api/experiences')
       .then((res) => res.json())
       .then((data) => {
@@ -27,7 +36,11 @@ export default function Experience() {
         setExperiences([])
       })
       .finally(() => setLoading(false))
-  }, [])
+  }, [settings.sections.experience])
+
+  if (!settings.sections.experience) {
+    return null
+  }
 
   if (loading) {
     return (

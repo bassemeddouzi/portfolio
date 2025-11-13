@@ -65,6 +65,14 @@ async function initDatabase() {
         autoIncrement: true,
         primaryKey: true,
       },
+      name: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      jobTitle: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
       title: {
         type: DataTypes.STRING,
         allowNull: false,
@@ -74,6 +82,14 @@ async function initDatabase() {
         allowNull: false,
       },
       imageUrl: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      imageData: {
+        type: DataTypes.BLOB('long'),
+        allowNull: true,
+      },
+      imageMimeType: {
         type: DataTypes.STRING,
         allowNull: true,
       },
@@ -193,7 +209,7 @@ async function initDatabase() {
 
     // Synchroniser tous les modèles avec la base de données
     console.log('🔄 Synchronisation des modèles...')
-    await sequelize.sync({ force: false })
+    await sequelize.sync({ alter: true })
     console.log('✅ Tables créées : users, abouts, skills, experiences, projects')
 
     // Créer l'utilisateur admin par défaut

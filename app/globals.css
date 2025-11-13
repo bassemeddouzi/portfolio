@@ -9,6 +9,15 @@
   --primary-color-50: rgba(14, 165, 233, 0.1);
   --primary-color-100: rgba(14, 165, 233, 0.2);
   --primary-color-200: rgba(14, 165, 233, 0.3);
+
+  --theme-font-family: 'Inter', 'Segoe UI', sans-serif;
+  --theme-heading-font-family: 'Poppins', 'Segoe UI', sans-serif;
+  --theme-body-bg: #f8fafc;
+  --theme-body-bg-dark: #0f172a;
+  --theme-text-color: #0f172a;
+  --theme-text-color-dark: #f8fafc;
+  --theme-heading-transform: none;
+  --theme-heading-letter-spacing: normal;
 }
 
 @layer base {
@@ -25,7 +34,26 @@
   }
 
   body {
-    @apply bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-300;
+    font-family: var(--theme-font-family, 'Inter', 'Segoe UI', sans-serif);
+    background-color: var(--theme-body-bg, #f8fafc);
+    color: var(--theme-text-color, #0f172a);
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+  .dark body {
+    background-color: var(--theme-body-bg-dark, #0f172a);
+    color: var(--theme-text-color-dark, #f8fafc);
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--theme-heading-font-family, 'Poppins', 'Segoe UI', sans-serif);
+    text-transform: var(--theme-heading-transform, none);
+    letter-spacing: var(--theme-heading-letter-spacing, normal);
   }
 }
 
