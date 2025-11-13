@@ -1,4 +1,5 @@
 import { Sequelize } from 'sequelize'
+import pg from 'pg'
 
 let sequelizeInstance: Sequelize | null = null
 let isDummy = false
@@ -28,6 +29,7 @@ function getSequelize(): Sequelize {
         host: 'localhost',
         port: 5432,
         dialect: 'postgres',
+        dialectModule: pg,
         logging: false,
         // Disable connection validation during build
         pool: {
@@ -64,6 +66,7 @@ function getSequelize(): Sequelize {
           host: process.env.DB_HOST!,
           port: parseInt(process.env.DB_PORT || '5432'),
           dialect: 'postgres',
+          dialectModule: pg,
           logging: process.env.NODE_ENV === 'development' ? console.log : false,
           pool: {
             max: 5,
