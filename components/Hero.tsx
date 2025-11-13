@@ -101,7 +101,7 @@ export default function Hero() {
     ? content.description.split('\n').map((p) => p.trim()).filter(Boolean)
     : []
 
-  const stats = content.stats || defaultHeroContent.stats
+  const stats = content.stats || defaultHeroContent.stats!
 
   return (
     <section
@@ -125,7 +125,7 @@ export default function Hero() {
                 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-gray-900 dark:text-gray-100 leading-tight"
                 style={{
                   letterSpacing: 'var(--theme-heading-letter-spacing)',
-                  textTransform: 'var(--theme-heading-transform)',
+                  textTransform: 'var(--theme-heading-transform)' as any,
                 }}
               >
                 {loading ? (
